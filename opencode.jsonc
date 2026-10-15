@@ -1,0 +1,47 @@
+{
+  // Agent definitions are in Markdown files under ./agents/
+  // Each file's YAML frontmatter defines metadata (mode, model, permissions)
+  // and the body is the system prompt.
+  // See https://opencode.ai/docs/agents for details.
+  "$schema": "https://opencode.ai/config.json",
+  "default_agent": "plan",
+  // Global permission baseline. Agent rules append after these, so the last matching
+  // rule across both lists wins. V2 rule shape: {action, resource, effect}.
+  // Broad rules go first; each exception follows so it can win the match.
+  // Principle: minimum privilege per agent (YAGNI + SOC).
+  "permissions": [
+    // File editing — denied globally. Build overrides to allow; Plan gets a narrow
+    // allowlist limited to plan files and domain docs.
+    { "action": "edit", "resource": "*", "effect": "deny" },
+    { "action": "read", "resource": "*", "effect": "allow" },
+    { "action": "glob", "resource": "*", "effect": "allow" },
+    { "action": "grep", "resource": "*", "effect": "allow" },
+    { "action": "webfetch", "resource": "*", "effect": "allow" },
+    // Skills — every installed skill is loadable. The per-skill entries that used to sit
+    // here were all "allow", so they never changed behavior and only added noise.
+    { "action": "skill", "resource": "*", "effect": "allow" },
+    // Subagent dispatch — denied globally. Review tightens this to an explicit deny;
+    // Plan keeps an explicit allow so the grilling interview can dispatch fact-finding.
+    { "action": "subagent", "resource": "*", "effect": "deny" },
+    // Shell — read-only scoped globally. Only Build overrides to full allow.
+    // Read commands allowed: git, rg, file listing, content reading, path checks.
+    // Per-agent git rules (the read-only allow list and the write-form denies)
+    // live in ./agents/*.md, not here. See docs/adr/0005.
+    { "action": "shell", "resource": "*", "effect": "deny" },
+    { "action": "shell", "resource": "git *", "effect": "allow" },
+    { "action": "shell", "resource": "rg *", "effect": "allow" },
+    { "action": "shell", "resource": "cat *", "effect": "allow" },
+    { "action": "shell", "resource": "dir *", "effect": "allow" },
+    { "action": "shell", "resource": "ls *", "effect": "allow" },
+    { "action": "shell", "resource": "type *", "effect": "allow" },
+    { "action": "shell", "resource": "Get-ChildItem *", "effect": "allow" },
+    { "action": "shell", "resource": "Get-Content *", "effect": "allow" },
+    { "action": "shell", "resource": "Select-String *", "effect": "allow" },
+    { "action": "shell", "resource": "Test-Path *", "effect": "allow" },
+    { "action": "shell", "resource": "Write-Output *", "effect": "allow" },
+    { "action": "shell", "resource": "echo *", "effect": "allow" },
+  ],
+  // `lsp` was removed: V2 accepts the field but never runs language servers, so the
+  // typescript-language-server and ty entries were dead configuration.
+  "shell": "powershell",
+}
