@@ -10,11 +10,27 @@
   "session": {
     "sidebar": "auto",
     "scrollbar": true,
-    "thinking": "show"
+    "thinking": "hide",
+    "grouping": "none",
+    "verbosity": "medium",
+    "permissions": "prompt"
   },
   "animations": true,
   "keybinds": {
     "agent.cycle": "tab",
     "agent.cycle.reverse": "shift+tab"
+  },
+  "tabs": {
+    "layout": "horizontal",
+    "indicators": "status"
+  },
+  "scroll": {
+    "speed": 4
+  },
+  "terminal": {
+    "title": false
+  },
+  "debug": {
+    "devtools": false
   }
 }
