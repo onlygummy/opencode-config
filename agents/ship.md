@@ -1,6 +1,6 @@
 ---
-description: Version control specialist. Short-lived branch, conventional commit, push, and pull request. Stops before merge. Invoke with @vcs.
-mode: subagent
+description: Version control specialist. Short-lived branch, conventional commit, push, and pull request. Stops before merge. Switch to this agent when the work is ready to ship.
+mode: primary
 color: '#4fc3f7'
 permissions:
   # Git work needs no file edits: everything goes through git and gh.

@@ -5,12 +5,6 @@ color: '#fa5f5f'
 permissions:
   # Build is the only agent allowed to edit. Global edit deny is overridden here.
   - { action: "edit", resource: "*", effect: "allow" }
-  # A user mention of @vcs from a build session still runs the subagent
-  # permission check, and the global rule denies subagents. This is scoped to
-  # the vcs agent so build cannot launch anything else. It is a capability, not
-  # a workflow: build's prompt never tells it to commit, and ADR 0007 keeps the
-  # commit step a deliberate user action.
-  - { action: "subagent", resource: "vcs", effect: "allow" }
   # Full shell access. git add/commit/push stay denied: the user commits after
   # reading the commit message that Review generates. Order matters, last match
   # wins: broad allow, then the git deny, then the git exceptions that must win.

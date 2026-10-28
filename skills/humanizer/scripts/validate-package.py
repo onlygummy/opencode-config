@@ -3,7 +3,6 @@
 
 from __future__ import annotations
 
-import json
 import re
 from pathlib import Path
 
@@ -13,7 +12,6 @@ SKILL_PATH = ROOT / "SKILL.md"
 SKILL = SKILL_PATH.read_text(encoding="utf-8")
 README = (ROOT / "README.md").read_text(encoding="utf-8")
 AGENTS = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
-PLUGIN = json.loads((ROOT / ".claude-plugin" / "plugin.json").read_text(encoding="utf-8"))
 
 
 def require_match(match: re.Match[str] | None, message: str) -> re.Match[str]:
@@ -40,17 +38,15 @@ readme_version = require_match(
     "Add a version entry to README.md",
 ).group(1)
 
-package_versions = {skill_version, readme_version, str(PLUGIN.get("version", ""))}
+package_versions = {skill_version, readme_version}
 if len(package_versions) != 1:
     raise SystemExit(
-        f"Use one package version in all files: {sorted(package_versions)}"
+        f"Use one version in SKILL.md and README.md: {sorted(package_versions)}"
     )
 
 skill_files = {path.relative_to(ROOT) for path in ROOT.rglob("SKILL.md")}
 if SKILL_PATH.is_symlink() or skill_files != {Path("SKILL.md")}:
     raise SystemExit("Keep one regular SKILL.md at the repo root")
-if PLUGIN.get("skills") != ["./"]:
-    raise SystemExit("Point the Claude plugin skill loader at the repo root")
 
 plain_language_rules = (
     "## Writing style",

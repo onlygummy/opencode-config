@@ -23,7 +23,3 @@ jobs:
         run: python3 scripts/validate-package.py
       - name: Check skill discovery
         run: npx --yes skills@1.5.20 add . --list
-      - name: Check Claude marketplace
-        run: |
-          npm install --global @anthropic-ai/claude-code
-          claude plugin validate .
