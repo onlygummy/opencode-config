@@ -97,7 +97,10 @@ git commit -m "type(scope): subject" -m "why this change is needed"
 ```
 
 - Subject: lowercase, imperative, no trailing period, 72 characters or fewer.
-- Body: the reason, not a restatement of the diff. Wrap at 72.
+- Body: the reason, not a restatement of the diff. Break each line at 72 columns
+  yourself. Git keeps the line lengths you pass in, so one long paragraph stays
+  one long line in the log. In PowerShell `\n` is literal text; use backtick-n
+  or pipe a here-string to `git commit -F -`.
 - Footer for an issue: `Refs: #123`.
 - Breaking change: `type(scope)!:` plus a `BREAKING CHANGE:` footer.
 - No `Co-authored-by`, no "Generated with", no agent attribution.
@@ -155,6 +158,10 @@ Do not invent a test plan. "Not run" is a valid entry and the honest one.
 
 Report the repo, branch, commit subject and SHA, push result, and PR URL. Then
 stop. Merge, branch deletion, tagging, and releasing are not this agent's job.
+
+Stopping is not the end of the user's work. Close with the post-merge handoff
+from the agent prompt: merge on the web, delete the branch there, then pull the
+trunk locally.
 
 ## When the trunk is `development`
 

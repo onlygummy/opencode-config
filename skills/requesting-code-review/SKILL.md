@@ -284,10 +284,10 @@ rename, add features, or change anything else.
 If verification passed:
 
 ```bash
-git add -A && git commit -m "[Git Flow Prefix]: <description>"
+git add -A && git commit -m "type(scope): subject"
 ```
 
-Use Git Flow prefix to categorize: `Feature:`, `Bugfix:`, `Hotfix:`, `Release:`, `Support:`, `Chore:`, `Refactor:`, or `Docs:`. Max 50 chars, omit articles/filler.
+Use a conventional commit type: `feat`, `fix`, `docs`, `refactor`, `test`, `chore`, or `perf`. Lowercase subject, imperative, 72 characters or fewer, no trailing period. Put the reason in the body, broken by hand at 72 columns.
 
 ## Reference: Common Patterns to Flag
 
