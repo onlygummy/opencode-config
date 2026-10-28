@@ -30,7 +30,8 @@ Switch agents with `tab`.
 3. `review` verifies the diff and writes the commit message.
 4. `ship` commits, pushes after approval, and opens the PR, then hands off the
    merge.
-5. The user merges on the web, deletes the branch there, and pulls the trunk.
+5. You merge on the web. `ship` verifies the merge, deletes the remote branch
+   after approval, and pulls the trunk.
 
 ## Human gates
 

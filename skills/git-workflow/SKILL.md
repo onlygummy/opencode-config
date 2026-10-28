@@ -157,11 +157,13 @@ Do not invent a test plan. "Not run" is a valid entry and the honest one.
 ## Step 10 — Stop
 
 Report the repo, branch, commit subject and SHA, push result, and PR URL. Then
-stop. Merge, branch deletion, tagging, and releasing are not this agent's job.
+stop. Merge, tagging, and releasing are not this agent's job. Branch deletion
+follows the merged-branch checks in the agent prompt, and only after the user
+reports the merge.
 
 Stopping is not the end of the user's work. Close with the post-merge handoff
-from the agent prompt: merge on the web, delete the branch there, then pull the
-trunk locally.
+from the agent prompt: merge on the web, report the merge so the agent can
+verify it, then the agent deletes the branch and pulls the trunk.
 
 ## When the trunk is `development`
 

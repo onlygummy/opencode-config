@@ -28,9 +28,20 @@ message in conventional commit form. The user commits.
 ## ship
 
 It reads the trunk from `origin/HEAD`, creates a short-lived branch, commits,
-pushes only after approval, and opens the PR. It ends with a handoff: merge on
-the web, delete the branch there, then pull the trunk. It cannot merge, force
-push, amend, rebase, delete a branch, or create a release.
+pushes only after approval, and opens the PR. After you merge, it verifies the
+PR state, deletes the merged branch after approval, and pulls the trunk.
+
+It deletes only when all four checks pass:
+
+- `gh pr view <number> --json state,headRefName` returns MERGED, and the head
+  branch is the branch to delete.
+- `git fetch origin` ran, so remote refs are current.
+- `git branch -r --merged origin/<trunk>` lists the branch.
+- The branch is not the trunk, and the working tree is clean.
+
+If a check fails, it stops and names the check. It cannot merge, force push,
+amend, rebase, delete a local branch, or create a release. The local branch stays
+after the remote one is deleted.
 
 ## scribe
 
@@ -46,6 +57,7 @@ subagents.
 | Review passes | `review` | A commit lands only after the diff has been checked in a fresh context |
 | Push approval | user | A local commit can still be fixed; a pushed one is already on the remote |
 | Merge | user, on the web | No automated test run gates the PR, so the merge click is the check that the diff was read |
+| Branch deletion | user approves, `ship` checks | A deleted remote branch is hard to recover |
 | Release | user | `release-please` reads conventional commits and opens the release PR; no one creates tags by hand |
 
 ## Only scribe writes documents
