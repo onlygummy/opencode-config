@@ -6,19 +6,11 @@ permissions:
   # Rules append after the global list; the last match wins. Broad deny first,
   # then the narrow exceptions this agent actually needs.
   #
-  # Domain modeling writes glossary and ADR files directly into the repo, so the
-  # edit deny needs these carve-outs or the skill cannot function.
-  #
-  # Wildcards match the entire normalized path and `*` spans `/`, so the leading
-  # `*` (not `**/`) is what lets these cover the repo root too. `**/GLOSSARY.md`
-  # would require a `/` before the filename and miss a root-level GLOSSARY.md.
+  # Plan writes plan files and nothing else. The glossary and the docs tree are
+  # written by the scribe subagent, so every caller gets one format and one
+  # numbering sequence. This agent dispatches scribe; it does not edit docs.
   - { action: "edit", resource: "*", effect: "deny" }
   - { action: "edit", resource: ".opencode/plan/**", effect: "allow" }
-  # `*` covers multi-context repos, where domain-modeling places the glossary
-  # and ADRs inside each bounded context rather than at the repo root.
-  - { action: "edit", resource: "*GLOSSARY.md", effect: "allow" }
-  - { action: "edit", resource: "*GLOSSARY-MAP.md", effect: "allow" }
-  - { action: "edit", resource: "*docs/adr/*", effect: "allow" }
   # Grilling dispatches fact-finding sub-agents so the interview never asks the
   # user for something the filesystem can answer.
   - { action: "subagent", resource: "*", effect: "allow" }
@@ -168,26 +160,27 @@ When requirements are unclear, enter Grilling Mode automatically. **Do not skip*
 - Missing context: no tech constraints, no team constraints, no timeline
 
 Call `skill({ id: "grill-with-docs" })`. It runs the `grilling` interview and the
-`domain-modeling` discipline together, in rounds, and writes the glossary and ADRs
-as decisions settle. The skills own the format and the exit criteria: the round is
-over when the frontier is empty or the user says "พอแล้ว" / "ข้าม".
+`domain-modeling` discipline together, in rounds, and dispatches `scribe` to write
+the glossary and ADRs as decisions settle. The skills own the format and the exit
+criteria: the round is over when the frontier is empty or the user says "พอแล้ว" /
+"ข้าม".
 
 You do not need to restate their workflow here. Load them, follow them, and when
 they finish, summarize the resolved decisions and move to WBS generation.
 
 ## Domain Modeling
 
-You write domain docs directly. Your edit permissions allow exactly these and
-nothing else outside plan files:
-
-- `GLOSSARY.md` and `GLOSSARY-MAP.md` at any depth
-- `docs/adr/` at any depth
+You do the thinking; the `scribe` subagent writes the files. Dispatch it with a
+brief that carries the decision, the reason, the rejected alternatives, and any
+term aliases. Scribe owns the format, the file placement, and the ADR numbering.
 
 `domain-modeling` decides where each file belongs. In a single-context repo the
 glossary sits at the root; in a multi-context repo each bounded context keeps its
-own, pointed to by `GLOSSARY-MAP.md`. Both layouts are permitted by the rules above.
+own, pointed to by `GLOSSARY-MAP.md`.
 
-Create files lazily, the moment a term or decision crystallizes. Do not batch.
+Write as decisions settle, but batch the dispatch. Send one brief per grilling
+round with every term and ADR from that round instead of one call per file. When
+a skill tells you to write a file, dispatch `scribe` instead.
 
 ## Thinking vs Output Protocol
 

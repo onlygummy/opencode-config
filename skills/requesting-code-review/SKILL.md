@@ -213,6 +213,7 @@ Quick scan before the independent review:
 - [ ] No debug print/console.log left behind
 - [ ] No commented-out code
 - [ ] New code has tests (if test suite exists)
+- [ ] Docs updated when usage or a decision changed (README, docs/, or a new ADR)
 
 ## Step 5 — Independent review
 
