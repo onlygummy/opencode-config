@@ -40,7 +40,7 @@ command after its own deny. See [ADR 0005](adr/0005-per-agent-git-rules.md).
 | `plan` | Files under `.opencode/plan/` | Read-only git and read-only file commands |
 | `build` | Code and config; docs files are denied | Full allow, but `git *` is denied except read forms, `git add`, `git rm`, `git mv`, and `git stash`; test runners ask |
 | `review` | Nothing | Read-only git, test runners, and lint; no `add`, `commit`, or `push` |
-| `ship` | Nothing | Git write path, and `gh pr` read and create; `push` asks, merge and force push are denied |
+| `ship` | Nothing | Git write path and `gh pr` read and create; `push` and remote branch deletion ask, merge and force push are denied |
 | `scribe` | The docs tree and `README.md` | Nothing |
 
 ## How patterns match
