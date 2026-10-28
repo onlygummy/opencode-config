@@ -18,6 +18,12 @@ broad deny belongs before the narrow allow that must beat it.
 
 _Avoid_: permission block, access control entry
 
+**Pipeline stage**: One command between pipes or statement separators. The
+scanner emits each stage as its own shell resource, so an allow has to cover
+every stage of a pipeline. A rule written for the whole line never matches.
+
+_Avoid_: sub-command, pipe part
+
 **Mode**: Where an agent runs. `primary` means it is the main agent of a session
 and the user switches to it by tab. `subagent` means a parent agent launches it in
 a child session. `all` means either.
@@ -63,3 +69,33 @@ recorded rather than patched, because a resource pattern matches a whole command
 string and cannot express argument-level rules.
 
 _Avoid_: known issue, accepted limitation
+
+**Trunk**: The branch a repo treats as its mainline. Read it from `origin/HEAD`
+rather than assuming `main`, because a repo may keep its trunk on
+`development`. Short-lived branches are cut from it and merged back into it.
+
+_Avoid_: main branch, master
+
+**Short-lived branch**: A branch that carries one change and lives hours to a
+couple of days before merging into the trunk. The thing it is not is a
+long-lived integration branch, which holds unmerged work for weeks.
+
+_Avoid_: dev branch, feature branch
+
+**VCS agent**: The `vcs` subagent that owns branch, commit, push, and pull
+request. It holds git and gh permissions of its own so the other agents stay
+read-only, and it stops before merge.
+
+_Avoid_: git bot, commit bot
+
+**Commit gate**: The approval point before an action that cannot be undone from
+the machine. Here it is push: a local commit can still be fixed, a pushed one
+is already on the remote.
+
+_Avoid_: approval step, checkpoint
+
+**Release PR**: The pull request `release-please` opens on the trunk carrying
+the changelog and the version bump. Merging it creates the tag, so it is the
+only place a version changes.
+
+_Avoid_: version PR, bump PR

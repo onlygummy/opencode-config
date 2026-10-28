@@ -85,6 +85,17 @@ permissions:
   - { action: "shell", resource: "Test-Path *", effect: "allow" }
   - { action: "shell", resource: "Write-Output *", effect: "allow" }
   - { action: "shell", resource: "echo *", effect: "allow" }
+  # Read-only pipeline stages. The scanner checks each pipe segment as its own
+  # resource, so a pipeline needs an allow per cmdlet rather than one rule for
+  # the whole line. `ForEach-Object` and `Where-Object` stay denied: their main
+  # argument is a script block, which is arbitrary code execution.
+  - { action: "shell", resource: "Select-Object *", effect: "allow" }
+  - { action: "shell", resource: "Format-Table *", effect: "allow" }
+  - { action: "shell", resource: "Format-List *", effect: "allow" }
+  - { action: "shell", resource: "Sort-Object *", effect: "allow" }
+  - { action: "shell", resource: "Measure-Object *", effect: "allow" }
+  - { action: "shell", resource: "Get-Member *", effect: "allow" }
+  - { action: "shell", resource: "ConvertTo-Json *", effect: "allow" }
   # Write forms of an otherwise blanket-allowed command. These must stay last:
   # last match wins, so placing them above `git branch*` would kill them.
   # Verified with `git branch -d <nonexistent>` returning permission.rejected.
