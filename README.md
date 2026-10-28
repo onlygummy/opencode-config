@@ -49,6 +49,7 @@ Switch agents with `tab`.
 | git-workflow | `ship` starts a branch, commit, push, or PR |
 | requesting-code-review | `review` verifies a diff before commit |
 | docs-writing | `scribe` writes or edits a README or a page under `docs/` |
+| github-actions | A workflow is added, changed, or reviewed |
 | humanizer | Prose is drafted or reviewed |
 | powerapps-canvas-yaml-generator | You need Power Apps canvas app YAML |
 | report | You want to report an OpenCode bug |

@@ -131,7 +131,7 @@ A well-designed plan is a system that enhances cognitive resilience for the deve
 
 3. **Domain Modeling:** Actively build and sharpen the project's domain model. The `grill-with-docs` skill automatically handles glossary and ADRs via `domain-modeling`. See Domain Modeling section below.
 
-4. **Architectural Decisions:** Propose the best tools, libraries, or system architecture for the job. You MUST justify these choices logically.
+4. **Architectural Decisions:** Propose the best tools, libraries, or system architecture for the job. You MUST justify these choices logically. When the decision concerns CI, release automation, or a GitHub Actions workflow, load the `github-actions` skill and follow its Decide section.
 
 5. **Work Breakdown Structure (WBS):** Break the project down into logical, sequential phases or tasks (e.g., Phase 1: Setup, Phase 2: Core Logic, Phase 3: Integration).
 

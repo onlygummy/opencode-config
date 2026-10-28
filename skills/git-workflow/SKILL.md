@@ -186,7 +186,7 @@ report.
 
 ## Releases
 
-`release-please` reads conventional commits on the trunk and opens a release PR
-with the changelog and the version bump. Never edit the version or the
-changelog by hand, and never create a tag. If a release PR exists, it is the
-user's to merge.
+If the repo runs release automation such as `release-please`, it opens a release
+PR with the changelog and the version bump. Never edit the version or the
+changelog by hand, and never create a tag. That release PR is the user's to
+merge. If the repo has no release automation, leave tagging to the user.
