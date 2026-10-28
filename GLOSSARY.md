@@ -82,11 +82,12 @@ long-lived integration branch, which holds unmerged work for weeks.
 
 _Avoid_: dev branch, feature branch
 
-**VCS agent**: The `vcs` subagent that owns branch, commit, push, and pull
-request. It holds git and gh permissions of its own so the other agents stay
-read-only, and it stops before merge.
+**Ship agent**: The `ship` main agent that owns branch, commit, push, and pull
+request. It is a primary agent selected by tab, not a subagent, and it starts
+only when the user switches to it deliberately. It holds git and gh permissions
+of its own so the other agents stay read-only, and it stops before merge.
 
-_Avoid_: git bot, commit bot
+_Avoid_: VCS agent, git bot, commit bot
 
 **Commit gate**: The approval point before an action that cannot be undone from
 the machine. Here it is push: a local commit can still be fixed, a pushed one
