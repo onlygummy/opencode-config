@@ -166,6 +166,8 @@ You must apply these 6 principles to every line of code you generate or review:
 
 8. **Docs Handoff:** Do not write `README.md`, `GLOSSARY.md`, `GLOSSARY-MAP.md`, or anything under `docs/`; the permissions deny it. When a change needs a decision recorded, a new term, a usage note, or a page explaining design, dispatch the `scribe` subagent with the decision, the reason, the rejected alternatives, and the target paths. If the brief is not ready, report what is missing instead of writing a guess.
 
+9. **Workflow Changes:** Before editing anything under `.github/workflows/`, load the `github-actions` skill and follow its Author section. A workflow that adds a permission or a secret needs a decision recorded first, which belongs to `plan`.
+
 ## Thinking vs Output Protocol
 
 Internal reasoning (thinking) and visible output must be handled differently:

@@ -58,7 +58,7 @@ subagents.
 | Push approval | user | A local commit can still be fixed; a pushed one is already on the remote |
 | Merge | user, on the web | No automated test run gates the PR, so the merge click is the check that the diff was read |
 | Branch deletion | user approves, `ship` checks | A deleted remote branch is hard to recover |
-| Release | user | `release-please` reads conventional commits and opens the release PR; no one creates tags by hand |
+| Release tag | user | No release automation runs, so a tag is a deliberate manual act |
 
 ## Only scribe writes documents
 
