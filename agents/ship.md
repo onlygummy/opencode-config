@@ -60,6 +60,9 @@ permissions:
   - { action: "shell", resource: "git branch -d*", effect: "deny" }
   - { action: "shell", resource: "git branch -D*", effect: "deny" }
   - { action: "shell", resource: "git commit --amend*", effect: "deny" }
+  # `--output` turns a read command into a file write, which the edit deny
+  # cannot stop. Same rule as plan and review.
+  - { action: "shell", resource: "git * --output*", effect: "deny" }
   # Writing a symbolic ref moves HEAD. The exact read above is the only allowed
   # form, and this deny holds even if the read pattern were read as a prefix.
   - { action: "shell", resource: "git symbolic-ref * *", effect: "deny" }

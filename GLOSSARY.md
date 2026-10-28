@@ -1,14 +1,14 @@
 # OpenCode agent configuration
 
-This repo configures OpenCode: three primary agents (plan, build, review), the
-global permission baseline, and the skills those agents load. The domain is agent
-behavior, not application code.
+This repo configures OpenCode: four primary agents (plan, build, review, ship),
+one docs subagent (scribe), the global permission baseline, and the skills those
+agents load. The domain is agent behavior, not application code.
 
 ## Language
 
 **Agent**: One named assistant profile: a system prompt, a mode, and a permission
-set. This repo defines three. The reviewer runs in a fresh context with no history
-of how the code it checks was written.
+set. This repo defines four primary agents and one subagent. The reviewer runs in
+a fresh context with no history of how the code it checks was written.
 
 _Avoid_: assistant, bot
 
@@ -53,10 +53,20 @@ round.
 
 _Avoid_: open questions, backlog
 
-**Domain doc**: `GLOSSARY.md`, `GLOSSARY-MAP.md`, and files under `docs/adr/`. These
-are the only files the plan agent writes outside plan files.
+**Domain doc**: `GLOSSARY.md`, `GLOSSARY-MAP.md`, and every file under `docs/`,
+including `docs/adr/`. The scribe subagent writes them; no primary agent does.
 
 _Avoid_: vault, notes
+
+**Scribe**: The subagent that writes the docs tree. It owns the format and the
+numbering, never the decision, so a caller has to supply a brief.
+
+_Avoid_: docs bot, document writer
+
+**Usage doc**: `README.md`. It explains how to use the config and is not a place
+for design notes; those go under `docs/`.
+
+_Avoid_: guide, manual
 
 **Read-only escape**: A command pattern that still lets an agent without `edit`
 permission change state, such as `git branch -d` or `git diff --output=<file>`.
