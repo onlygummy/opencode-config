@@ -2,31 +2,35 @@
 
 This repo is a personal OpenCode configuration, installed at `~/.config/opencode`
 (`%USERPROFILE%\.config\opencode` on Windows). It defines four primary agents,
-one docs subagent, a global permission baseline, and the skills those agents
-load.
+three subagents, a global permission baseline, and the skills those agents load.
 
 ## Install
 
 Put the repo at `~/.config/opencode`. On Windows that is
 `%USERPROFILE%\.config\opencode`.
 
-Restart OpenCode after you change an agent file. Sessions start in `plan`.
-Switch agents with `tab`.
+OpenCode watches the config and reloads agents, commands, skills, MCP servers,
+and plugins when you save. Run `/reload` to force a reload. Sessions start in
+`plan`. Switch agents with `tab`.
 
 ## Agents
 
 | Agent | Use it for | Can edit |
 | --- | --- | --- |
-| plan | Requirements, design, and work breakdown; the default agent | Plan files under `.opencode/plan/` |
+| plan | Requirements, design, and work breakdown; the default agent | Plan files under the project's `.opencode/plan/`, which git ignores |
 | build | Writing and refactoring code and config | Code and config, but not `README.md`, `GLOSSARY.md`, `GLOSSARY-MAP.md`, or `docs/` |
 | review | Pre-commit verification and the commit message | Nothing |
 | ship | Branch, commit, push, and pull request | Nothing; it writes git and `gh` state only |
 | scribe | ADRs, glossary entries, README, and pages under `docs/` | `README.md`, `GLOSSARY.md`, `GLOSSARY-MAP.md`, and `docs/` |
+| design-surveyor | Reading a project's design system; it reports values, components, and drift | Nothing |
+| design-steward | Recording and maintaining the design system record | `docs/design-system/` only |
 
 ## The loop
 
 1. `plan` clarifies the request and records decisions through `scribe`.
-2. `build` implements the change and runs lint.
+2. `build` reads the design system record before UI work, implements the change,
+   runs lint, and dispatches `design-steward` after a UI change that alters
+   tokens or components.
 3. `review` verifies the diff and writes the commit message.
 4. `ship` commits, pushes after approval, and opens the PR, then hands off the
    merge.
@@ -49,6 +53,7 @@ Switch agents with `tab`.
 | git-workflow | `ship` starts a branch, commit, push, or PR |
 | requesting-code-review | `review` verifies a diff before commit |
 | docs-writing | `scribe` writes or edits a README or a page under `docs/` |
+| design-system | `design-surveyor` reports, `design-steward` records and maintains a design system |
 | github-actions | A workflow is added, changed, or reviewed |
 | humanizer | Prose is drafted or reviewed |
 | powerapps-canvas-yaml-generator | You need Power Apps canvas app YAML |
@@ -59,6 +64,7 @@ Switch agents with `tab`.
 - [GLOSSARY.md](GLOSSARY.md): terms used in this repo
 - [docs/adr/](docs/adr/): decisions, numbered in sequence
 - [docs/workflow.md](docs/workflow.md): what each agent does and where it stops
+- [docs/design-agents.md](docs/design-agents.md): the design system agents and their boundary
 - [docs/permissions.md](docs/permissions.md): how the permission rules work
 - [docs/contributing.md](docs/contributing.md): adding agents, skills, and docs
 

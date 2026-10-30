@@ -1,14 +1,15 @@
 # OpenCode agent configuration
 
 This repo configures OpenCode: four primary agents (plan, build, review, ship),
-one docs subagent (scribe), the global permission baseline, and the skills those
-agents load. The domain is agent behavior, not application code.
+three subagents (scribe, design-surveyor, design-steward), the global permission
+baseline, and the skills those agents load. The domain is agent behavior, not
+application code.
 
 ## Language
 
 **Agent**: One named assistant profile: a system prompt, a mode, and a permission
-set. This repo defines four primary agents and one subagent. The reviewer runs in
-a fresh context with no history of how the code it checks was written.
+set. This repo defines four primary agents and three subagents. The reviewer runs
+in a fresh context with no history of how the code it checks was written.
 
 _Avoid_: assistant, bot
 
@@ -54,7 +55,9 @@ round.
 _Avoid_: open questions, backlog
 
 **Domain doc**: `GLOSSARY.md`, `GLOSSARY-MAP.md`, and every file under `docs/`,
-including `docs/adr/`. The scribe subagent writes them; no primary agent does.
+including `docs/adr/`, except the design system record. The scribe subagent
+writes them; no primary agent does, and the design system record has its own
+writer.
 
 _Avoid_: vault, notes
 
@@ -62,6 +65,34 @@ _Avoid_: vault, notes
 numbering, never the decision, so a caller has to supply a brief.
 
 _Avoid_: docs bot, document writer
+
+**Design system record**: The pages under `docs/design-system/` that state a
+project's tokens, components, accessibility rules, and UX voice. Owned by
+`design-steward`.
+
+_Avoid_: style guide, design docs
+
+**Surveyor**: The `design-surveyor` subagent. It reads a project and reports what
+exists, and holds no write permission.
+
+_Avoid_: auditor, inspector
+
+**Steward**: The `design-steward` subagent. It is the only writer of the design
+system record.
+
+_Avoid_: design owner, style keeper
+
+**Design drift**: A disagreement between the record and the code, classified as
+record stale, code off-standard, or a deliberate change. The class decides who
+fixes it.
+
+_Avoid_: inconsistency, mismatch
+
+**Token authority**: The rule that `docs/design-system/tokens.md` is the standard
+and code follows it. Bootstrap extracts from code first because the record does
+not exist yet.
+
+_Avoid_: token sync, source of truth
 
 **Usage doc**: `README.md`. It explains how to use the config and is not a place
 for design notes; those go under `docs/`.

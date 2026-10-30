@@ -6,6 +6,21 @@ Create a Markdown file in `agents/`. The frontmatter holds `description`,
 `mode`, `color`, and `permissions`. The body is the system prompt. Add a row for
 the agent to the table in `README.md`.
 
+Start the body with an identity banner above `## Role`. The heading carries the
+display name, the agent id, and the mode. The paragraph states what the agent
+writes and what it must not write, names the agent that takes the denied work,
+and ends by saying the identity comes from this file, not from earlier messages.
+A long session can mix in work from other agents, and the body is the only place
+a subagent sees its own identity: the parent reads the frontmatter
+`description` when it picks an agent, and the child never does. Replace the
+placeholders below with the agent's own rules.
+
+```markdown
+# Build Agent (build, primary)
+
+You write WHAT_IT_WRITES. You never write WHAT_IT_MUST_NOT_WRITE. Your identity comes from this file, not from earlier messages.
+```
+
 Rules are appended after the global baseline, and the last match wins. Read
 [permissions.md](permissions.md) before writing the list.
 
@@ -21,6 +36,10 @@ Dispatch `scribe`. It is the only writer of `README.md`, `GLOSSARY.md`,
 `GLOSSARY-MAP.md`, and files under `docs/`. `plan` and `build` both reach it.
 Scribe loads the `docs-writing` skill for README and docs pages. It fixes the
 page types, the page shape, the length limits, and the compaction rules.
+
+The design system record under `docs/design-system/` is the one exception:
+`design-steward` owns it, and `scribe` is denied there. See
+[ADR 0017](adr/0017-design-system-record-has-one-owner.md).
 
 The brief needs the target, the decision, the reason, the rejected alternatives,
 and the allowed paths. `scribe` starts with no conversation memory, so anything

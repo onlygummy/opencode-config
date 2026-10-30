@@ -35,18 +35,20 @@ command after its own deny. See [ADR 0005](adr/0005-per-agent-git-rules.md).
 
 ## Agent scope
 
-| Agent | Edit scope | Shell scope |
-| --- | --- | --- |
-| `plan` | Files under `.opencode/plan/` | Read-only git and read-only file commands |
-| `build` | Code and config; docs files are denied | Full allow, but `git *` is denied except read forms, `git add`, `git rm`, `git mv`, and `git stash`; test runners ask |
-| `review` | Nothing | Read-only git, test runners, and lint; no `add`, `commit`, or `push` |
-| `ship` | Nothing | Git write path and `gh pr` read and create; `push` and remote branch deletion ask, merge and force push are denied |
-| `scribe` | The docs tree and `README.md` | Nothing |
+| Agent | Edit scope | Shell scope | Subagent scope |
+| --- | --- | --- | --- |
+| `plan` | Files matching `*.opencode/plan/*` | Read-only git and read-only file commands | `scribe`, `explore`, `general` |
+| `build` | Code and config; docs files are denied | Full allow, but `git *` is denied except read forms, `git add`, `git rm`, `git mv`, and `git stash`; test runners ask | `scribe`, `design-surveyor`, `design-steward` |
+| `review` | Nothing | Read-only git, test runners, and lint; no `add`, `commit`, or `push` | None |
+| `ship` | Nothing | Git write path and `gh pr` read and create; `push` and remote branch deletion ask, merge and force push are denied | None |
+| `scribe` | `docs/` except `docs/design-system/`, plus `README.md` | Nothing | None |
 
 ## How patterns match
 
 Patterns are globs over the whole normalized path or command string. `*` spans
-`/`, so `*docs/*` matches a file at any depth under `docs/`. On Windows, pattern
+`/`, so `*docs/*` matches a file at any depth under `docs/`. A pattern with no
+leading `*` matches only paths that begin with those characters, which is why a
+path outside the project needs the leading wildcard. On Windows, pattern
 matching ignores case, so `*README.md` also matches a file named `readme.md`.
 Name a template `readme-template.md` when only the README itself should be
 protected. A shell rule matches a command string, not a single argument.
