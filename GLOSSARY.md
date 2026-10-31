@@ -105,7 +105,8 @@ is already on the remote.
 
 _Avoid_: approval step, checkpoint
 
-**Release tag**: A tag the user creates by hand when they want a fixed snapshot
-of the config. No workflow creates tags in this repo.
+**Release PR**: The pull request `release-please` opens on the trunk carrying
+the changelog and the version bump. Merging it creates the tag, so it is the
+only place a version changes.
 
-_Avoid_: release PR, version PR
+_Avoid_: version PR, bump PR

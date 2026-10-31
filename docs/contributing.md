@@ -30,20 +30,6 @@ ADR numbers are sequential in `docs/adr/`. Take the highest number and add one,
 padded to four digits. Glossary entries follow the shape already in
 `GLOSSARY.md`, including the `_Avoid_:` line when a term has aliases.
 
-## Workflows
-
-Workflow changes follow the `github-actions` skill. `plan` decides when a
-workflow is needed and records it as an ADR. `build` writes the YAML. `review`
-checks it for script injection, excessive permissions, and unpinned actions. A
-read-only check that adds no permission or secret may be added by `build`
-without a new ADR.
-
-CI runs `scripts/check_config.py` on every pull request and on a push to the
-trunk. The script parses the frontmatter of every agent and skill, checks
-permission triples and effects, checks that skill names match their folder, and
-checks that links in `README.md` and `docs/` resolve. Run the same script
-locally before asking for review.
-
 ## Change flow
 
 1. `plan` settles the requirements and records the decisions.
@@ -55,6 +41,6 @@ The user merges on the web, deletes the branch there, and pulls the trunk.
 
 ## Commits
 
-Commit messages use conventional commit form. This repo has no release
-automation, so no changelog or tag is produced automatically. If you want a fixed
-snapshot, create the tag by hand.
+Commit messages use conventional commit form. `release-please` reads them on the
+trunk and opens the release PR with the version and changelog. The user merges
+that PR. No one creates tags by hand.
