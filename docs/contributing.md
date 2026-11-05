@@ -38,8 +38,10 @@ padded to four digits. Glossary entries follow the shape already in
 1. `plan` settles the requirements and records the decisions.
 2. `build` gets the short-lived branch from `branch-keeper`, or cuts it itself
    when the subagent is unavailable, then implements the change and runs lint.
-3. `build` commits the change. `review` verifies the commits and cross-checks
-   the commit message.
+3. `build` commits the change and dispatches `review`. `review` verifies the
+   committed range, cross-checks the commit message, and writes the verdict
+   artifact to `.opencode/review/`. `ship` refuses a push when no passing
+   artifact matches the commit.
 4. `ship` pushes and opens the PR.
 
 The user merges on the web. `ship` then verifies the merge, deletes the remote

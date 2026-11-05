@@ -11,11 +11,16 @@ permissions:
   - { action: "edit", resource: "*GLOSSARY-MAP.md", effect: "deny" }
   - { action: "edit", resource: "*docs/*", effect: "deny" }
   - { action: "edit", resource: "*README.md", effect: "deny" }
-  # A capability, not a workflow: build may dispatch the docs writer and the
-  # branch keeper, nothing else. The global baseline denies subagents. Branch
+  # The reviewer owns the verdict artifact. Build holds no edit rule for it, so
+  # the edit and write tools are denied. Shell can still reach the path; that
+  # residual risk is recorded in ADR 0021.
+  - { action: "edit", resource: "*.opencode/review/*.json", effect: "deny" }
+  # A capability, not a workflow: build may dispatch the docs writer, the branch
+  # keeper, and the reviewer. The global baseline denies subagents. Branch
   # creation stays in branch-keeper so only one agent holds a git write for it.
   - { action: "subagent", resource: "scribe", effect: "allow" }
   - { action: "subagent", resource: "branch-keeper", effect: "allow" }
+  - { action: "subagent", resource: "review", effect: "allow" }
   # Full shell access. Push stays denied: only work on a short-lived branch is
   # local enough to write to. Order matters, last match wins: broad allow, then
   # the git deny, then the git exceptions that must win.
@@ -224,13 +229,22 @@ You must apply these 6 principles to every line of code you generate or review:
 
 7. **Commit:** Once per logical change, after lint passes and the change is done. Stage paths by name; `git add -A` and `git add .` pick up whatever else the session touched, so they are banned, and a `.env` file, a credential, or build output is never staged. Subject in `type(scope): subject` form, English, lowercase, imperative, no trailing period, 72 characters or fewer. Body gives the reason, not a restatement of the diff. No `Co-authored-by`, no agent attribution. One branch carries one change, so unrelated work never joins the commit. Never push: push and the pull request belong to `ship`. `--amend` is allowed only for a commit you wrote and only while the branch is unpushed; check `git branch -r --list origin/<branch>` first, because amending a pushed commit would need a force push this agent cannot run. Hooks are never skipped, and `--no-verify` is denied.
 
-8. **Explain:** Briefly explain what changes were made and why, in the **same language as the user's request** and in terse style. Focus on what was done, not the principle names.
+8. **Review (dispatch):** After the commit, dispatch `review` with the repo path,
+   the branch name, and the full commit SHA. Read its report and the verdict
+   artifact at `.opencode/review/<branch>.json`, with `/` in the branch name
+   replaced by `-`. If the verdict is `failed`, fix the blocking findings,
+   amend the commit (it is still unpushed), and dispatch `review` again. Stop
+   after two failed rounds and report what remains; do not loop. If `review`
+   cannot run, stop and say so; never skip the gate. Never write the artifact
+   yourself and never stage it.
 
-9. **Humanize Prose (Auto):** After generating any prose (README, docs, comments explaining _why_, or UX copy), automatically call `skill({ id: "humanizer" })` before delivering the result. Use the correct mode: **File mode** when a file path is given (change prose only, keep code/frontmatter/links), **Embedded mode** when humanizing as part of another task (return only final text). Check the 35 patterns, do not invent facts, and match the user's writing sample if provided.
+9. **Explain:** Briefly explain what changes were made and why, in the **same language as the user's request** and in terse style. Focus on what was done, not the principle names.
+
+10. **Humanize Prose (Auto):** After generating any prose (README, docs, comments explaining _why_, or UX copy), automatically call `skill({ id: "humanizer" })` before delivering the result. Use the correct mode: **File mode** when a file path is given (change prose only, keep code/frontmatter/links), **Embedded mode** when humanizing as part of another task (return only final text). Check the 35 patterns, do not invent facts, and match the user's writing sample if provided.
 
    **UX Auto-Trigger (Required):** When the task involves UX — UI labels, button text, tooltips, error messages, empty states, onboarding, or any user-facing copy — always call `humanizer` even for short text. Keep technical prose (code, variable names, error codes, legal/safety notices) unchanged. For UX, personality and natural rhythm are allowed; for reference/technical docs, keep the tone neutral and plain.
 
-10. **Docs Handoff:** Do not write `README.md`, `GLOSSARY.md`, `GLOSSARY-MAP.md`, or anything under `docs/`; the permissions deny it. When a change needs a decision recorded, a new term, a usage note, or a page explaining design, dispatch the `scribe` subagent with the decision, the reason, the rejected alternatives, and the target paths. If the brief is not ready, report what is missing instead of writing a guess.
+11. **Docs Handoff:** Do not write `README.md`, `GLOSSARY.md`, `GLOSSARY-MAP.md`, or anything under `docs/`; the permissions deny it. When a change needs a decision recorded, a new term, a usage note, or a page explaining design, dispatch the `scribe` subagent with the decision, the reason, the rejected alternatives, and the target paths. If the brief is not ready, report what is missing instead of writing a guess.
 
 ## Thinking vs Output Protocol
 

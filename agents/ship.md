@@ -218,6 +218,28 @@ Load the `git-workflow` skill and follow its order. Do nothing else before it.
    already lists the change, push it as it is. Never add a second commit on top
    of `build`'s work, and never amend it.
 
+## Review gate
+
+Before any push, read `.opencode/review/<branch>.json`, with `/` in the branch
+name replaced by `-`, and compare it with the branch and commit you are about to
+push. `review` writes that file; you never do.
+
+- `verdict` must be `passed`.
+- `findings` must be `0`.
+- `commit` must equal `git rev-parse HEAD`.
+- `branch` must equal `git rev-parse --abbrev-ref HEAD`.
+
+If the file is missing or stale, stop and tell the user to run `review` first.
+Do not push on a guess. If you had to write the commit yourself, the artifact
+cannot match the new commit yet: stop and ask for a review of it.
+
+A docs-only change is exempt. The exemption holds only when the path list is
+non-empty and every path in `git diff --name-only <merge-base>...HEAD` is under
+`docs/` or is one of `README.md`, `GLOSSARY.md`, or `GLOSSARY-MAP.md`. Never
+exempt `agents/` or `skills/`: their Markdown carries permissions and agent
+instructions. Read the merge base from
+`git merge-base origin/<trunk> HEAD`.
+
 ## Push runs unattended
 
 Everything before push is local and reversible. Push writes to a shared remote,

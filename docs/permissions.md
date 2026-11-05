@@ -38,11 +38,22 @@ command after its own deny. See [ADR 0005](adr/0005-per-agent-git-rules.md).
 | Agent | Edit scope | Shell scope |
 | --- | --- | --- |
 | `plan` | Files under `.opencode/plan/` | Read-only git and read-only file commands |
-| `build` | Code and config; docs files are denied | Full allow, but `git *` is denied except read forms, `git add`, `git rm`, `git mv`, `git stash`, `git commit`, and `git switch*`; `--amend` is allowed only on an unpushed commit, `--no-verify` and `-n` are denied, push stays denied, and the destructive switch forms are denied; test runners ask |
+| `build` | Code and config; docs files and the verdict artifact are denied for the edit and write tools | Full allow, but `git *` is denied except read forms, `git add`, `git rm`, `git mv`, `git stash`, `git commit`, and `git switch*`; `--amend` is allowed only on an unpushed commit, `--no-verify` and `-n` are denied, push stays denied, and the destructive switch forms are denied; test runners ask |
 | `branch-keeper` | Nothing | Read-only state checks plus `cd *` and `git switch -c*`; destructive switch forms and branch deletion are denied |
-| `review` | Nothing | Read-only git, test runners, and lint; no `add`, `commit`, or `push` |
+| `review` | The verdict artifact, `.opencode/review/*.json`, only | Read-only git, test runners, and lint; no `add`, `commit`, or `push` |
 | `ship` | Nothing | Git write path and `gh pr` read and create; may dispatch `branch-keeper` when the tree is clean; push is allowed, remote branch deletion asks, and trunk push, force push, prune, tag push, and merge are denied |
 | `scribe` | The docs tree and `README.md` | Nothing |
+
+`build` may dispatch `scribe`, `branch-keeper`, and `review`. The global baseline
+denies subagents, so each allow is explicit. `review` is read-only for code but
+writes one file. Its `edit` deny comes first and the narrow allow for
+`*.opencode/review/*.json` comes after it, so the last match wins. `build` runs
+the reverse order: its broad allow comes first and the deny for the same path
+follows it. That deny covers the edit and write tools. `build` also holds a broad
+shell allow, so a shell write to the path is not blocked. The gap is a recorded
+residual risk, not a guarantee: the artifact records that a review ran for that
+commit and branch, and it is not a cryptographic proof. See
+[ADR 0021](adr/0021-build-dispatches-review-and-ship-checks-the-verdict.md).
 
 `ship` pushes without a prompt, but it denies `git push --prune` and
 `git push --follow-tags`. `--prune` deletes remote refs without the delete ask.

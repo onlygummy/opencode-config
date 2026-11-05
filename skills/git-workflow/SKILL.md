@@ -122,8 +122,19 @@ git show --stat HEAD
 ```
 
 Expect exactly the commits you intended, usually one. This agent does not run
-tests or lint: verification belongs to the review agent. If the change was not
-verified, say so in the PR body instead of implying it was.
+tests or lint: verification belongs to the review agent. An unverified change
+stays local; the artifact gate below blocks the push.
+
+Check the review artifact before the push. Read `.opencode/review/<branch>.json`
+with `/` replaced by `-`. It must name the same branch and `git rev-parse HEAD`,
+with `verdict: passed` and `findings: 0`. Missing or stale: stop and ask for a
+review; do not push.
+
+A docs-only change is exempt only when the path list from
+`git diff --name-only <merge-base>...HEAD` is non-empty and every path is under
+`docs/` or is `README.md`, `GLOSSARY.md`, or `GLOSSARY-MAP.md`. `agents/` and
+`skills/` are never exempt. Read the merge base from
+`git merge-base origin/<trunk> HEAD`.
 
 ## Step 8 — Push
 

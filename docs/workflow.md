@@ -20,7 +20,11 @@ stops. It edits only after the branch exists. It cannot write `README.md`,
 `GLOSSARY.md`, `GLOSSARY-MAP.md`, or anything under `docs/`; a decision that
 needs recording goes to `scribe` through a brief. It runs lint only. Tests belong
 to `review`. It stages and commits one change on the short-lived branch, and it
-still cannot push.
+still cannot push. After the commit it dispatches `review` with the branch and
+the full SHA. A failed verdict sends it back to fix, amend, and dispatch `review`
+again; it stops after two failed rounds. It holds no edit rule for the verdict
+artifact, and the edit and write tools are denied for it; a shell write remains
+a recorded residual risk.
 
 ## branch-keeper
 
@@ -39,12 +43,23 @@ the right tab and a subagent never offers to switch to another agent.
 
 ## review
 
-It verifies the commits against the trunk in a fresh context. It cannot edit,
-stage, commit, or push. The baseline is the merge base with the trunk. A
-`git worktree` at a scratch path is used only while the tree is still dirty,
-because `git stash` would strand the user's changes if the pop failed. It runs
-a static security scan and the `requesting-code-review` pipeline, then
-cross-checks the commit message against the diff instead of writing it.
+It verifies the commits against the trunk in a fresh context. `build` dispatches
+it after the commit, and the user can still switch to its tab. A dispatched run
+starts in a child session with no caller history, so the isolation is the same.
+It cannot edit code, stage, commit, or push. The baseline is the merge base with
+the trunk. A `git worktree` at a scratch path is used only while the tree is
+still dirty, because `git stash` would strand the user's changes if the pop
+failed. It runs a static security scan and the `requesting-code-review` pipeline,
+then cross-checks the commit message against the diff instead of writing it.
+
+Its one write is the verdict artifact at `.opencode/review/<branch>.json`, with
+`/` in the branch name replaced by `-`. The file holds the verdict, the full
+commit SHA, the branch, and the finding count, plus a reason when the verdict is
+`skipped`. The directory is gitignored. `build` holds no edit rule for the file
+and the edit and write tools are denied; a shell write is a recorded residual
+risk, so the artifact is a record that a review ran, not a proof. On a docs-only
+change it skips the deep pipeline and records `skipped`, under the same path
+rule the `ship` section defines.
 
 ## ship
 
@@ -53,8 +68,17 @@ opens the PR on the short-lived branch that `build` or `branch-keeper` cut. It
 commits only when the tree arrives uncommitted. A fallback branch is cut
 only when the work was never branched: through `branch-keeper` when the tree is
 clean, or by `ship` itself when the reviewed change is still in the tree and the
-subagent's dirty-trunk check would refuse it. After you merge, it verifies the PR
-state, deletes the merged branch after approval, and pulls the trunk.
+subagent's dirty-trunk check would refuse it. Before any push it reads the verdict
+artifact and refuses unless the verdict is `passed`, the finding count is `0`,
+the commit equals `HEAD`, and the branch equals the checked-out branch. A
+docs-only change is exempt only when the path list is non-empty and every
+changed path is under `docs/` or is one of `README.md`, `GLOSSARY.md`, or
+`GLOSSARY-MAP.md`. `agents/` and `skills/` are never exempt, because their
+Markdown carries permissions and agent instructions, and an empty path list is
+not docs-only. On an exempt change it pushes without the artifact and says so.
+When it had to write the commit itself, it stops and asks for a review of that
+commit. After you merge, it verifies the PR state, deletes the merged branch
+after approval, and pulls the trunk.
 
 It deletes only when all four checks pass:
 
@@ -81,7 +105,7 @@ subagents.
 
 | Gate | Owner | Why |
 | --- | --- | --- |
-| Review passes | `review` | The diff is checked in a fresh context before `ship` pushes, and a failed verdict sends the work back to `build` |
+| Review passes | `review`, dispatched by `build` | The diff is checked in a fresh context after the commit, and the verdict artifact gates the push; a failed verdict sends the work back to `build` |
 | Merge | user, on the web | No automated test run gates the PR, so the merge click is the check that the diff was read |
 | Branch deletion | user approves, `ship` checks | A deleted remote branch is hard to recover |
 | Release | user | `release-please` reads conventional commits and opens the release PR; no one creates tags by hand |

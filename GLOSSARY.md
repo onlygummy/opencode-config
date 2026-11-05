@@ -1,14 +1,17 @@
 # OpenCode agent configuration
 
-This repo configures OpenCode: four primary agents (plan, build, review, ship),
-two subagents (scribe and branch-keeper), the global permission baseline, and the
-skills those agents load. The domain is agent behavior, not application code.
+This repo configures OpenCode: four tab-selectable agents (plan, build, review,
+ship), two dispatch-only subagents (scribe and branch-keeper), the global
+permission baseline, and the skills those agents load. The domain is agent
+behavior, not application code.
 
 ## Language
 
 **Agent**: One named assistant profile: a system prompt, a mode, and a permission
-set. This repo defines four primary agents and two subagents. The reviewer runs in
-a fresh context with no history of how the code it checks was written.
+set. This repo defines four tab-selectable agents (plan, build, review, ship) and
+two dispatch-only subagents (scribe and branch-keeper). `review` is also
+dispatchable, so `build` can launch it after a commit. The reviewer runs in a
+fresh context with no history of how the code it checks was written.
 
 _Avoid_: assistant, bot
 
@@ -37,10 +40,28 @@ agent prompt if copied inline. Its `description` decides whether the model sees 
 _Avoid_: plugin, command, helper
 
 **Independent reviewer**: The review agent. It verifies a diff with no shared
-context with the implementer and holds no `edit` permission, so it reports issues
-instead of fixing them.
+context with the implementer and holds no `edit` permission for code, so it
+reports issues instead of fixing them. Its one write is the verdict artifact.
 
 _Avoid_: checker, QA bot
+
+**Verdict artifact**: The JSON record `review` writes to
+`.opencode/review/<branch>.json` after a run, named after the branch with `/`
+replaced by `-`. It holds the verdict, the full commit SHA, the branch, and the
+finding count, and it is the record `ship` checks before a push. It is not a
+cryptographic proof: `build` holds no edit rule for it and the edit and write
+tools are denied, but a shell write is a recorded residual risk.
+
+_Avoid_: review report, review output
+
+**Review gate**: The check `ship` runs before a push: the verdict artifact must
+name the commit and branch being pushed, its verdict must be `passed`, and its
+finding count must be `0`. A stale artifact fails the gate. A docs-only change is
+exempt only when the path list is non-empty and every path is under `docs/` or is
+one of `README.md`, `GLOSSARY.md`, or `GLOSSARY-MAP.md`. `agents/` and `skills/`
+are never exempt.
+
+_Avoid_: pre-push check, CI gate
 
 **Baseline**: The test and lint failure count a repo already had before a change.
 Only failures above the baseline block a commit.
