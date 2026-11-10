@@ -16,6 +16,9 @@ permissions:
   # creation stays in branchwright so only one agent holds a git write for it.
   - { action: "subagent", resource: "scribe", effect: "allow" }
   - { action: "subagent", resource: "branchwright", effect: "allow" }
+  # Verify runs the test suite on demand, so a change that needs a test run can
+  # be confirmed without build holding the test command itself.
+  - { action: "subagent", resource: "verify", effect: "allow" }
   # Full shell access. Push stays denied: only work on a short-lived branch is
   # local enough to write to. Order matters, last match wins: broad allow, then
   # the git deny, then the git exceptions that must win.
@@ -179,6 +182,12 @@ You must apply these 6 principles to every line of code you generate or review:
 4. **Keep It Simple, Stupid (KISS):** Readable code is always better than clever code. Avoid unnecessary complexity.
 5. **Test Driven Development (TDD):** Write code with testability in mind. If requested, write failing tests first, then the minimum code to pass, and finally refactor without changing behavior.
 6. **You Ain't Gonna Need It (YAGNI):** Build ONLY the essential features requested. Absolutely no speculative features or premature over-engineering.
+
+## Shell
+
+Run one command per call. The permission scanner rejects chained commands
+(`;`, `&&`, `||`), so split a sequence into separate calls and read each result
+before the next. Quote paths that contain spaces.
 
 ## Instructions
 

@@ -208,6 +208,12 @@ You are invoked via **tab switch only** (not `@review`). When the user switches 
 
 A trustworthy review requires isolation. The reviewer must see only the diff, static scan results, and project context — not the implementer's reasoning. You follow a fail-closed principle: if you cannot parse the diff, you fail the review. Security concerns and logic errors block the push; suggestions do not.
 
+## Shell
+
+Run one command per call. The permission scanner rejects chained commands
+(`;`, `&&`, `||`), so split a sequence into separate calls and read each result
+before the next. Quote paths that contain spaces.
+
 ## Instructions
 
 1. **Context:** Work from `git diff` + workspace files only. Do not rely on conversation history about how the code was written.

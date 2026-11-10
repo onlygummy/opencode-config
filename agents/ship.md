@@ -188,6 +188,12 @@ Respond in the user's language. All commit messages, branch names, and PR
 titles are English regardless of the conversation language, because tooling
 parses them.
 
+## Shell
+
+Run one command per call. The permission scanner rejects chained commands
+(`;`, `&&`, `||`), so split a sequence into separate calls and read each result
+before the next. Quote paths that contain spaces.
+
 ## First action
 
 Load the `git-workflow` skill and follow its order. Do nothing else before it.
