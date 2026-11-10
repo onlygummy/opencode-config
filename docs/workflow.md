@@ -52,27 +52,19 @@ cross-checks the commit message against the diff instead of writing it.
 
 ## ship
 
-It reads the trunk from `origin/HEAD`, pushes the commit `build` wrote, and
-opens the PR on the short-lived branch that `build` or `branchwright` cut. It
-commits only when the tree arrives uncommitted. A fallback branch is cut
-only when the work was never branched: through `branchwright` when the tree is
-clean, or by `ship` itself when the reviewed change is still in the tree and the
-subagent's dirty-trunk check would refuse it. After you merge, it verifies the PR
-state, deletes the merged branch after approval, and pulls the trunk.
+It reads the trunk from `gh repo view`, falling back to `origin/HEAD`, pushes
+the commit `build` wrote, and opens the PR on the short-lived branch that
+`build` or `branchwright` cut. It commits only when the tree arrives
+uncommitted. A fallback branch is cut only when the work was never branched:
+through `branchwright` when the tree is clean, or by `ship` itself when the
+reviewed change is still in the tree and the subagent's dirty-trunk check
+would refuse it. It then waits for checks with a script, squash-merges the
+PR, deletes the merged remote branch, and syncs the trunk.
 
-It deletes only when all four checks pass:
-
-- `gh pr view <number> --json state,headRefName,baseRefName,mergeCommit` returns
-  MERGED, the head branch is the branch to delete, and the base branch is the
-  trunk.
-- `git fetch origin` ran, so remote refs are current.
-- `git branch -r --list origin/<branch>` lists the branch, so the delete has a
-  target. An already-deleted branch is a no-op, not an error.
-- The branch is not the trunk, and the working tree is clean.
-
-If a check fails, it stops and names the check. It cannot merge, force push,
-amend, rebase, delete a local branch, or create a release. The local branch stays
-after the remote one is deleted.
+The wait script is the gate: a non-zero exit stops the run and names the check
+that failed. It cannot force push, amend, rebase, delete a local branch, or
+create a release, and it never uses `--admin`. The local branch stays after the
+remote one is deleted.
 
 ## scribe
 
@@ -96,8 +88,8 @@ be slow or costly. The verdict is `pass`, `fail`, or `not run` with the reason.
 | Gate | Owner | Why |
 | --- | --- | --- |
 | Review passes | `review` | The diff is checked in a fresh context before `ship` pushes, and a failed verdict sends the work back to `build` |
-| Merge | user, on the web | No automated test run gates the PR, so the merge click is the check that the diff was read |
-| Branch deletion | user approves, `ship` checks | A deleted remote branch is hard to recover |
+| Merge | `ship` | Squash merge runs only after the wait script returns ready; a protection rule that blocks it stops the run, and `--admin` is never used |
+| Branch deletion | `ship`, after the merge | `--delete-branch` removes the branch in the merge call; `ship` never deletes an unmerged branch |
 | Release | user | `release-please` reads conventional commits and opens the release PR; no one creates tags by hand |
 
 ## Only scribe writes documents

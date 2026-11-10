@@ -45,12 +45,14 @@ and are not in git.
 | `branchwright` | Nothing | Read-only state checks plus `cd *` and `git switch -c*`; destructive switch forms and branch deletion are denied |
 | `verify` | Nothing | Read-only git, lint and typecheck commands, and test runners that ask |
 | `review` | Nothing | Read-only git, test runners, and lint; no `add`, `commit`, or `push` |
-| `ship` | Nothing | Git write path and `gh pr` read and create; may dispatch `branchwright` when the tree is clean; push is allowed, remote branch deletion asks, and trunk push, force push, prune, tag push, and merge are denied |
+| `ship` | Nothing | Git write path and `gh pr` read, create, and squash merge; may dispatch `branchwright` when the tree is clean; push is allowed; `gh pr merge` is allowed but only with squash, and `--merge`, `--rebase`, and `--admin` are denied; trunk push, force push, prune, and tag push stay denied; the merged remote branch is deleted by `--delete-branch`; local `git branch --delete` is allowed, but its force forms are denied |
 | `scribe` | The docs tree and `README.md` | Nothing |
 
 `ship` pushes without a prompt, but it denies `git push --prune` and
 `git push --follow-tags`. `--prune` deletes remote refs without the delete ask.
-`--follow-tags` pushes tags, and `--tags` is already denied.
+`--follow-tags` pushes tags, and `--tags` is already denied. `ship` also allows
+`gh pr merge` only with squash, and denies `--merge`, `--rebase`, and `--admin`
+in both flag positions.
 
 ## How patterns match
 
@@ -68,8 +70,10 @@ resource, so an allow has to cover every stage. See
 
 A wildcard allow can inherit a write form hidden inside it. `git branch*` would
 also permit `git branch -d`, so `ship` follows that allow with an explicit deny
-for `-d` and `-D`. A short flag and its long spelling are separate patterns, so
-every denied branch write form lists both spellings: `-d`/`--delete`,
+for `-d` and `-D`. `ship` now also allows `git branch --delete`, because that
+long form refuses an unmerged branch, and denies the force spellings
+`--delete --force` and `--delete -f`. A short flag and its long spelling are
+separate patterns, so every denied branch write form lists both spellings:
 `-f`/`--force`, `-m`/`--move`, `-c`/`--copy`, `-t`/`--track`, and
 `-u`/`--set-upstream-to`, plus `--unset-upstream`, which has no short form.
 `git diff --output=<file>` writes a file through a command that reads as
@@ -88,8 +92,9 @@ every word is a pathspec, so the allowed form has no flag surface. See
 [ADR 0010](adr/0010-ship-can-unstage.md).
 
 `build` now holds a commit write. A commit stays on the local branch and can be
-amended or dropped, so it is not where work leaves the machine; the merge click
-on the web is still the only gate. `ship` keeps its commit path as a fallback
+amended or dropped, so it is not where work leaves the machine; the
+wait-for-checks script is the gate before `ship`'s squash merge, and `review`
+still checks the diff before the push. `ship` keeps its commit path as a fallback
 for a tree that arrives uncommitted. See
 [ADR 0020](adr/0020-build-writes-the-commit.md).
 

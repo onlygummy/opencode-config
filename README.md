@@ -263,7 +263,7 @@ but a separate `x-proxy-key` rotates on its own and lets a WAF rule match on it.
 | plan | Requirements, design, and work breakdown; the default agent | Plan files under `.opencode/plan/` |
 | build | Writing and refactoring code and config; it also commits on its short-lived branch | Code and config, but not `README.md`, `GLOSSARY.md`, `GLOSSARY-MAP.md`, or `docs/` |
 | review | Pre-push verification and a commit message cross-check | Nothing |
-| ship | Pushing and the pull request; it commits only when the tree arrives uncommitted | Nothing; it writes git and `gh` state only |
+| ship | Pushing, the pull request, the wait for checks, the squash merge, and the trunk sync; it commits only when the tree arrives uncommitted | Nothing; it writes git and `gh` state only |
 
 ### Sub Agent
 
@@ -278,14 +278,14 @@ but a separate `x-proxy-key` rotates on its own and lets a WAF rule match on it.
 1. `plan` clarifies the request and records decisions through `scribe`. When the request is fuzzy it loads `grill-with-docs`, which runs the grilling interview and writes ADRs and glossary entries as decisions settle.
 2. `build` dispatches `branchwright`, or cuts the short-lived branch itself when the subagent is unavailable, then edits, runs lint, and sends any docs work to `scribe`. When a change needs a test run, `build` can dispatch `verify`; the pre-push test gate still belongs to `review`.
 3. `build` commits the change. `review` loads `requesting-code-review`, verifies the commits against the trunk in a fresh context, and cross-checks the conventional commit message.
-4. `ship` loads `git-workflow`, pushes without a prompt, and opens the PR on the short-lived branch. It dispatches `branchwright` for an unbranched clean tree and commits only when the tree arrives uncommitted.
-5. You merge on the web. `ship` verifies the merge, deletes the remote branch after approval, and pulls the trunk.
+4. `ship` loads `git-delivery`, pushes without a prompt, and opens the PR on the short-lived branch. It dispatches `branchwright` for an unbranched clean tree and commits only when the tree arrives uncommitted. It then waits for checks, squash-merges, deletes the merged branch, and syncs the trunk.
+5. The merge is automated by `ship` with a squash merge and no `--admin`. A branch protection rule that blocks the merge stops the run instead of being bypassed.
 
 ## Human gates
 
 1. `review` must pass before the push.
-2. You merge the PR on the web. Merge is never automated.
-3. You approve deleting the merged remote branch.
+2. `ship` merges automatically with squash after the wait script returns ready.
+3. A branch protection rule that blocks the merge stops the run.
 
 ## Docs
 
