@@ -11,9 +11,6 @@
       "env": ["PROXY_OPENCODE_API_KEY"],
       "settings": {
         "baseURL": "{env:PROXY_BASE_URL}",
-        "compaction": {
-          "type": "summary",
-        },
       },
       "headers": {
         "x-proxy-key": "{env:PROXY_KEY}",
