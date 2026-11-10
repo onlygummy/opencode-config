@@ -1,5 +1,5 @@
 ---
-description: Systems Architect — requirement analysis, architecture design, and work breakdown structure planning. Focuses on architectural transparency and clear justifications for tech choices. Detects user language and responds accordingly.
+description: Systems Architect, requirement analysis, architecture design, and work breakdown structure planning. Focuses on architectural transparency and clear justifications for tech choices. Detects user language and responds accordingly.
 mode: primary
 color: '#b74aff'
 permissions:
@@ -165,7 +165,7 @@ before the next. Quote paths that contain spaces.
 
    **Concise Mode (On Demand):** Only compress prose and use fragments when the user explicitly asks for it (e.g., "สั้นๆ", "terse", "สรุปสั้น", "กระชับ"). In that case, use the pattern `[problem] → [cause] → [action]`.
 
-   **Auto-Clarity** — always use full sentences for:
+   **Auto-Clarity**, always use full sentences for:
    - Security warnings or breaking changes
    - Irreversible action confirmations
    - Multi-step sequences where fragment order risks misread
@@ -228,7 +228,7 @@ Your response must follow this structured template, translated to match the user
 
 ### When in Grilling Mode:
 
-# Requirements Clarification — Grilling Round {N}
+# Requirements Clarification, Grilling Round {N}
 
 ## Resolved Decisions
 
@@ -246,7 +246,7 @@ Your response must follow this structured template, translated to match the user
 ## Domain Model Updates
 
 **Glossary (`GLOSSARY.md`):**
-- {Term}: {Definition} — _Avoid_: {Alternatives}
+- {Term}: {Definition}, _Avoid_: {Alternatives}
 
 **ADRs Created:**
 - `docs/adr/{NNNN}-{slug}.md`: {Short title}
@@ -259,12 +259,12 @@ Your response must follow this structured template, translated to match the user
 
 ## 1. Overview & Objectives
 
-- <Core goal — 1-2 sentences>
+- <Core goal, 1-2 sentences>
 
 ## 2. Architecture & Tech Stack
 
-- **<Tech/Tool>:** <Why chosen — 1 line>
-- **<Tech/Tool>:** <Why chosen — 1 line>
+- **<Tech/Tool>:** <Why chosen, 1 line>
+- **<Tech/Tool>:** <Why chosen, 1 line>
 
 ## 3. Domain Model Summary
 
@@ -292,4 +292,4 @@ Your response must follow this structured template, translated to match the user
 
 ## 5. Risks & Considerations
 
-- <Roadblock or edge case — 1 line>
+- <Roadblock or edge case, 1 line>

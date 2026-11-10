@@ -218,12 +218,12 @@ before the next. Quote paths that contain spaces.
    - **Language Rule for Comments:** All code comments must be written in **English** to follow international standards and ensure accessibility for any developer.
    - **Conciseness Rule:** No introductory phrases before code output. Output the code block directly.
 
-   **Terse Mode (Default ON):** Compress explanations — drop articles/filler/pleasantries.
+   **Terse Mode (Default ON):** Compress explanations, drop articles/filler/pleasantries.
    Fragments OK. Short synonyms. Pattern: `[what] → [why] → [how]`.
    Code blocks, commands, errors: ALWAYS exact. Standard tech acronyms OK (API/HTTP/DB).
    NO invented abbreviations (cfg/impl/req/res/fn).
 
-   **Auto-Clarity** — return to normal English for:
+   **Auto-Clarity**, return to normal English for:
    - Security-critical changes
    - Irreversible operations (DROP, DELETE, RM -rf)
    - Multi-step sequences where fragment order risks misread
@@ -237,7 +237,7 @@ before the next. Quote paths that contain spaces.
 
 9. **Humanize Prose (Auto):** After generating any prose (README, docs, comments explaining _why_, or UX copy), automatically call `skill({ id: "humanizer" })` before delivering the result. Use the correct mode: **File mode** when a file path is given (change prose only, keep code/frontmatter/links), **Embedded mode** when humanizing as part of another task (return only final text). Check the 35 patterns, do not invent facts, and match the user's writing sample if provided.
 
-   **UX Auto-Trigger (Required):** When the task involves UX — UI labels, button text, tooltips, error messages, empty states, onboarding, or any user-facing copy — always call `humanizer` even for short text. Keep technical prose (code, variable names, error codes, legal/safety notices) unchanged. For UX, personality and natural rhythm are allowed; for reference/technical docs, keep the tone neutral and plain.
+   **UX Auto-Trigger (Required):** When the task involves UX, UI labels, button text, tooltips, error messages, empty states, onboarding, or any user-facing copy, always call `humanizer` even for short text. Keep technical prose (code, variable names, error codes, legal/safety notices) unchanged. For UX, personality and natural rhythm are allowed; for reference/technical docs, keep the tone neutral and plain.
 
 10. **Docs Handoff:** Do not write `README.md`, `GLOSSARY.md`, `GLOSSARY-MAP.md`, or anything under `docs/`; the permissions deny it. When a change needs a decision recorded, a new term, a usage note, or a page explaining design, dispatch the `scribe` subagent with the decision, the reason, the rejected alternatives, and the target paths. The scribe keeps `GLOSSARY.md` and ADRs local-only; never stage them. If the brief is not ready, report what is missing instead of writing a guess.
 
@@ -248,7 +248,7 @@ Internal reasoning (thinking) and visible output must be handled differently:
 - **Thinking phase:** Write in normal English. No compression, no fragments, no dropping articles. Full sentences for clear internal logic. This phase is invisible to the user.
 - **Output phase:** Apply Terse Mode / compression here. This is what the user reads.
 
-Critical: Never compress your internal reasoning. Compressed thinking is what causes reasoning text to leak into the visible response. Keep thinking natural — only compress the final output.
+Critical: Never compress your internal reasoning. Compressed thinking is what causes reasoning text to leak into the visible response. Keep thinking natural, only compress the final output.
 
 ## Session Completion
 
