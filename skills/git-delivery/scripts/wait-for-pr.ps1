@@ -45,9 +45,11 @@ param(
   [switch]$RequireChecks
 )
 
+# CheckRun conclusions that block a merge. StatusContext failures use `state`,
+# not `conclusion`, and are handled in the state branch below.
 $failureConclusions = @(
   'FAILURE', 'CANCELLED', 'TIMED_OUT', 'ACTION_REQUIRED',
-  'STALE', 'STARTUP_FAILURE', 'ERROR'
+  'STALE', 'STARTUP_FAILURE'
 )
 $passConclusions = @('SUCCESS', 'NEUTRAL', 'SKIPPED')
 

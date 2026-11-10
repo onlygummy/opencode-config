@@ -72,8 +72,8 @@ permissions:
   # The wait script is the merge gate. Allow it by file name only, so no other
   # PowerShell command becomes reachable. The path lives in the OpenCode config
   # tree, not the project, because that is where the skill ships its scripts.
-  - { action: "shell", resource: "powershell *wait-for-pr.ps1*", effect: "allow" }
-  - { action: "shell", resource: "pwsh *wait-for-pr.ps1*", effect: "allow" }
+  - { action: "shell", resource: "powershell -ExecutionPolicy Bypass -File *wait-for-pr.ps1*", effect: "allow" }
+  - { action: "shell", resource: "pwsh -ExecutionPolicy Bypass -File *wait-for-pr.ps1*", effect: "allow" }
 
   # Write guards. Last match wins, so these must stay at the end.
   # Force push has to lose the match wherever the flag sits, not only when it
