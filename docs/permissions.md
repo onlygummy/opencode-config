@@ -43,6 +43,7 @@ and are not in git.
 | `plan` | Files under `.opencode/plan/` | Read-only git and read-only file commands |
 | `build` | Code and config; docs files are denied | Full allow, but `git *` is denied except read forms, `git add`, `git rm`, `git mv`, `git stash`, `git commit`, and `git switch*`; `--amend` is allowed only on an unpushed commit, `--no-verify` and `-n` are denied, push stays denied, and the destructive switch forms are denied; test runners ask |
 | `branchwright` | Nothing | Read-only state checks plus `cd *` and `git switch -c*`; destructive switch forms and branch deletion are denied |
+| `verify` | Nothing | Read-only git, lint and typecheck commands, and test runners that ask |
 | `review` | Nothing | Read-only git, test runners, and lint; no `add`, `commit`, or `push` |
 | `ship` | Nothing | Git write path and `gh pr` read and create; may dispatch `branchwright` when the tree is clean; push is allowed, remote branch deletion asks, and trunk push, force push, prune, tag push, and merge are denied |
 | `scribe` | The docs tree and `README.md` | Nothing |

@@ -18,6 +18,10 @@ Create a folder under `skills/` with a `SKILL.md`. The frontmatter holds `name`
 and `description`. The description decides when the model loads the skill, so
 state the trigger.
 
+`build` can load `deslop` to strip AI code smells before a review, and
+`show-me-your-work` to prove a change with evidence instead of a claim. Both load
+on demand, when the skill description matches the work at hand.
+
 ## Write documents
 
 Dispatch `scribe`. It is the only writer of `README.md`, `GLOSSARY.md`,

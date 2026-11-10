@@ -1,6 +1,6 @@
 # Workflow
 
-Six agents share the work. Each one has a narrow scope and a stopping point.
+Seven agents share the work. Each one has a narrow scope and a stopping point.
 The permission rules enforce the scope; the prompt describes the job.
 
 ## plan
@@ -21,9 +21,10 @@ unavailable, or the user asks for the branch inline, it cuts the branch itself
 with `git switch -c <type/slug>` after the same four checks and the same three
 stops. It edits only after the branch exists. It cannot write `README.md`,
 `GLOSSARY.md`, `GLOSSARY-MAP.md`, or anything under `docs/`; a decision that
-needs recording goes to `scribe` through a brief. It runs lint only. Tests belong
-to `review`. It stages and commits one change on the short-lived branch, and it
-still cannot push.
+needs recording goes to `scribe` through a brief. It runs lint, and it can
+dispatch `verify` for a test run when a change needs one; the pre-push test gate
+still belongs to `review`. It stages and commits one change on the
+short-lived branch, and it still cannot push.
 
 ## branchwright
 
@@ -79,6 +80,16 @@ A subagent, launched by `plan` or `build`. It writes ADRs, glossary entries,
 `README.md`, and pages under `docs/`. It loads `docs-writing` for README and docs
 pages, and `domain-modeling` for ADRs. It has no shell and cannot dispatch other
 subagents.
+
+## verify
+
+A subagent, launched by `build` when a change needs a test run to confirm it. It
+runs the project's lint, typecheck, and test suite, and reports the exact
+commands, exit codes, and failing lines. It never edits, stages, commits, pushes,
+or changes branch state.
+
+Lint and typecheck run without a prompt; test runners ask first because they can
+be slow or costly. The verdict is `pass`, `fail`, or `not run` with the reason.
 
 ## Gates
 
