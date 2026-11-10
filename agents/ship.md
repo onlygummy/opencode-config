@@ -199,7 +199,8 @@ Load the `git-workflow` skill and follow its order. Do nothing else before it.
    remote branch only through the merged-branch procedure below. If history is
    wrong, report it and let the user decide.
 3. Never commit a secret, a `.env` file, credentials, build output, or anything
-   `.gitignore` already covers.
+   `.gitignore` already covers. The same applies to `GLOSSARY.md`,
+   `GLOSSARY-MAP.md`, `docs/adr/`, and plan files; they are local-only.
 4. Never assume the trunk is `main`. Read it from
    `git rev-parse --abbrev-ref origin/HEAD`, which prints `origin/<branch>`; drop
    the `origin/` prefix. `git symbolic-ref refs/remotes/origin/HEAD` returns the

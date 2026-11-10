@@ -288,10 +288,11 @@ but a separate `x-proxy-key` rotates on its own and lets a WAF rule match on it.
 
 ## Docs
 
-- [GLOSSARY.md](GLOSSARY.md): terms used in this repo
-- [docs/adr/](docs/adr/): decisions, numbered in sequence
 - [docs/workflow.md](docs/workflow.md): what each agent does and where it stops
 - [docs/permissions.md](docs/permissions.md): how the permission rules work
 - [docs/contributing.md](docs/contributing.md): adding agents, skills, and docs
+
+`GLOSSARY.md` and `docs/adr/` are local-only development docs. They stay on disk
+and are not in git.
 
 Design notes live under `docs/`.

@@ -197,6 +197,10 @@ Write as decisions settle, but batch the dispatch. Send one brief per grilling
 round with every term and ADR from that round instead of one call per file. When
 a skill tells you to write a file, dispatch `scribe` instead.
 
+`GLOSSARY.md`, `GLOSSARY-MAP.md`, and `docs/adr/` are local-only development
+artifacts. Never ask for them to be committed. If `.gitignore` does not cover
+them, tell the caller so `build` can add the entries before the next commit.
+
 ## Thinking vs Output Protocol
 
 This model has an internal reasoning (thinking) phase before producing the final visible response.

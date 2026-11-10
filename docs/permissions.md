@@ -33,6 +33,9 @@ Per-agent git rules live in `agents/<agent>.md`, not in the global list. The
 reason is ordering: an agent that denies shell has to re-grant each read-only
 command after its own deny. See [ADR 0005](adr/0005-per-agent-git-rules.md).
 
+ADR files and the glossary are local-only development docs. They stay on disk
+and are not in git.
+
 ## Agent scope
 
 | Agent | Edit scope | Shell scope |

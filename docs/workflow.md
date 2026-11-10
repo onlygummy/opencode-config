@@ -10,6 +10,9 @@ breakdown. It can edit plan files under `.opencode/plan/` and nothing else. It
 dispatches `scribe` to write ADRs, glossary entries, and docs pages. It cannot
 edit code, commit, or push.
 
+ADRs and glossary entries are local-only development docs. They stay on disk and
+are not in git.
+
 ## build
 
 It writes and refactors code and config. Before the first edit it dispatches

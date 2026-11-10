@@ -22,6 +22,9 @@ state the trigger.
 
 Dispatch `scribe`. It is the only writer of `README.md`, `GLOSSARY.md`,
 `GLOSSARY-MAP.md`, and files under `docs/`. `plan` and `build` both reach it.
+`GLOSSARY.md`, `GLOSSARY-MAP.md`, and `docs/adr/` are local-only development
+docs. They stay on disk and are not in git.
+
 Scribe loads the `docs-writing` skill for README and docs pages. It fixes the
 page types, the page shape, the length limits, and the compaction rules.
 
