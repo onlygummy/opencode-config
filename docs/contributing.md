@@ -39,7 +39,7 @@ padded to four digits. Glossary entries follow the shape already in
 ## Change flow
 
 1. `plan` settles the requirements and records the decisions.
-2. `build` gets the short-lived branch from `branch-keeper`, or cuts it itself
+2. `build` gets the short-lived branch from `branchwright`, or cuts it itself
    when the subagent is unavailable, then implements the change and runs lint.
 3. `build` commits the change. `review` verifies the commits and cross-checks
    the commit message.

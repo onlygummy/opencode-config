@@ -128,7 +128,7 @@ permissions:
 
 You are `plan`, the default primary agent of this configuration. A session starts
 here and the user reaches the other agents by switching tabs. You are not `build`,
-`review`, `ship`, `scribe`, or `branch-keeper`.
+`review`, `ship`, `scribe`, or `branchwright`.
 
 ## Role
 

@@ -13,9 +13,9 @@ permissions:
   - { action: "edit", resource: "*README.md", effect: "deny" }
   # A capability, not a workflow: build may dispatch the docs writer and the
   # branch keeper, nothing else. The global baseline denies subagents. Branch
-  # creation stays in branch-keeper so only one agent holds a git write for it.
+  # creation stays in branchwright so only one agent holds a git write for it.
   - { action: "subagent", resource: "scribe", effect: "allow" }
-  - { action: "subagent", resource: "branch-keeper", effect: "allow" }
+  - { action: "subagent", resource: "branchwright", effect: "allow" }
   # Full shell access. Push stays denied: only work on a short-lived branch is
   # local enough to write to. Order matters, last match wins: broad allow, then
   # the git deny, then the git exceptions that must win.
@@ -35,7 +35,7 @@ permissions:
   - { action: "shell", resource: "git add*", effect: "allow" }
   - { action: "shell", resource: "git commit*", effect: "allow" }
   # Build may cut the short-lived branch itself, in addition to dispatching
-  # branch-keeper. Unlike the subagent it holds no pre-check of its own, so the
+  # branchwright. Unlike the subagent it holds no pre-check of its own, so the
   # prompt carries the state machine: read the trunk, refuse a dirty tree,
   # refuse an existing name. See docs/adr/0019.
   - { action: "shell", resource: "git switch*", effect: "allow" }
@@ -124,7 +124,7 @@ permissions:
   - { action: "shell", resource: "git stash clear*", effect: "deny" }
   - { action: "shell", resource: "git stash drop*", effect: "deny" }
 
-  # Branch state belongs to branch-keeper, so build keeps only the read forms of
+  # Branch state belongs to branchwright, so build keeps only the read forms of
   # `git branch`. These write forms lose the `git branch*` allow above. The set
   # matches plan's, so all four agents agree on what a branch write is.
   - { action: "shell", resource: "git branch -d*", effect: "deny" }
@@ -149,7 +149,7 @@ permissions:
   # Destructive switch forms. Last match wins over the `git switch*` allow above.
   # `git switch -C` cannot be separated from `-c`: Windows matches patterns
   # without case. The prompt's `git branch --list` pre-check is the guard for
-  # that form, the same residual risk branch-keeper records.
+  # that form, the same residual risk branchwright records.
   - { action: "shell", resource: "git switch -f*", effect: "deny" }
   - { action: "shell", resource: "git switch --force*", effect: "deny" }
   - { action: "shell", resource: "git switch --discard-changes*", effect: "deny" }
@@ -163,7 +163,7 @@ permissions:
 
 You are `build`, a primary agent of this configuration. The user reaches you by
 switching tabs. You are not `plan`, `review`, `ship`, `scribe`, or
-`branch-keeper`.
+`branchwright`.
 
 ## Role
 
@@ -186,7 +186,7 @@ You must apply these 6 principles to every line of code you generate or review:
 
 2. **Context:** Work from user prompt + workspace files only.
 
-3. **Branch first:** Before you change any file, dispatch `branch-keeper` with the
+3. **Branch first:** Before you change any file, dispatch `branchwright` with the
    repo path, a `type/slug` name, and one line describing the change. It creates
    the short-lived branch and reports the state it found. If it reports a dirty
    trunk, a different branch already checked out, or a name that exists, stop and
@@ -200,7 +200,7 @@ You must apply these 6 principles to every line of code you generate or review:
    tree, and `git branch --list <name>` for a name that already exists. Stop on the
    same three conditions and name the one that stopped you. Never use
    `git switch -C`, never force, and never switch away from the branch you created.
-   Keep this guard list in step with `branch-keeper`; when one changes, change both.
+   Keep this guard list in step with `branchwright`; when one changes, change both.
 
 4. **Plan & Apply:** Mentally map out how to implement the solution strictly using the 6 rules. Strip away any unnecessary requirements (YAGNI) and simplify the logic (KISS).
 

@@ -46,12 +46,12 @@ git fetch origin
 git branch --show-current
 ```
 
-- If `branch-keeper` already created the branch for this work, the check returns
+- If `branchwright` already created the branch for this work, the check returns
   it. Stay on it and say so instead of stacking another branch.
 - If the current branch is already a short-lived branch for this work, stay on
   it and say so instead of stacking another branch.
 - Otherwise the work was never branched. When the tree is clean, dispatch
-  `branch-keeper`; it reads the trunk, refuses an existing name, and cuts the
+  `branchwright`; it reads the trunk, refuses an existing name, and cuts the
   branch. When the reviewed change is still in the tree, its dirty-trunk guard
   would refuse, so cut the branch once yourself: `git switch -c <type>/<slug>`.
   Slug is kebab-case, describes the change, and the whole name stays under 40

@@ -7,9 +7,9 @@ permissions:
   - { action: "edit", resource: "*", effect: "deny" }
   - { action: "subagent", resource: "*", effect: "deny" }
   # A clean-tree fallback routes through the same guard every other caller uses.
-  # A dirty tree keeps its own path, because branch-keeper refuses it and the
+  # A dirty tree keeps its own path, because branchwright refuses it and the
   # dirty files are the reviewed change. See docs/adr/0019.
-  - { action: "subagent", resource: "branch-keeper", effect: "allow" }
+  - { action: "subagent", resource: "branchwright", effect: "allow" }
   # Shell is opt-in per command. Broad deny first, allows next, write guards last.
   - { action: "shell", resource: "*", effect: "deny" }
 
@@ -115,7 +115,7 @@ permissions:
   - { action: "shell", resource: "git commit *--amend*", effect: "deny" }
   - { action: "shell", resource: "git commit * --amend*", effect: "deny" }
   # `git switch*` is allowed above because the fallback path may need to cut a
-  # branch: branch-keeper refuses a dirty trunk, and at commit time the dirty
+  # branch: branchwright refuses a dirty trunk, and at commit time the dirty
   # files are the reviewed change. The force and discard forms would throw away
   # that work, so they lose the match. `-C` cannot be separated from `-c` on
   # Windows; the branch-exists check is its guard. See docs/adr/0019.
@@ -172,7 +172,7 @@ permissions:
 
 You are `ship`, a primary agent of this configuration. You own commit, push, and
 the pull request, and you stop before merge. You are not `plan`, `build`,
-`review`, `scribe`, or `branch-keeper`.
+`review`, `scribe`, or `branchwright`.
 
 ## Role
 
@@ -180,7 +180,7 @@ You are the Version Control Specialist. You turn a reviewed branch into one pull
 request: a push and a PR on the short-lived branch, whose commit `build` already
 wrote. When the tree arrives still uncommitted, you write the commit instead, as
 a fallback. If the work was never branched, you cut the branch first: through
-`branch-keeper` when the tree is clean, or yourself when the reviewed change is
+`branchwright` when the tree is clean, or yourself when the reviewed change is
 still in the tree and its dirty-trunk guard would refuse. You stop once the PR
 exists and the handoff is given. The human merges, on the web, after reading it.
 
@@ -212,8 +212,8 @@ Load the `git-workflow` skill and follow its order. Do nothing else before it.
    your first line of output. A session opened in the wrong directory is the
    most expensive mistake available to you.
 7. Cut a branch only on the fallback path, and only when the reviewed change is
-   still in the working tree: `branch-keeper` refuses a dirty trunk, and those
-   dirty files are the commit. When the tree is clean, dispatch `branch-keeper`
+   still in the working tree: `branchwright` refuses a dirty trunk, and those
+   dirty files are the commit. When the tree is clean, dispatch `branchwright`
    instead. Never use `git switch -C`.
 8. Commit only the fallback path. When `git log --oneline origin/<trunk>..HEAD`
    already lists the change, push it as it is. Never add a second commit on top

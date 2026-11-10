@@ -16,7 +16,7 @@ are not in git.
 ## build
 
 It writes and refactors code and config. Before the first edit it dispatches
-`branch-keeper` to cut the short-lived branch. When the subagent is denied,
+`branchwright` to cut the short-lived branch. When the subagent is denied,
 unavailable, or the user asks for the branch inline, it cuts the branch itself
 with `git switch -c <type/slug>` after the same four checks and the same three
 stops. It edits only after the branch exists. It cannot write `README.md`,
@@ -25,7 +25,7 @@ needs recording goes to `scribe` through a brief. It runs lint only. Tests belon
 to `review`. It stages and commits one change on the short-lived branch, and it
 still cannot push.
 
-## branch-keeper
+## branchwright
 
 A subagent, launched by `build`, and by `ship` on a clean tree. It cuts the
 short-lived branch from the trunk before the first edit, or stops and names the
@@ -52,9 +52,9 @@ cross-checks the commit message against the diff instead of writing it.
 ## ship
 
 It reads the trunk from `origin/HEAD`, pushes the commit `build` wrote, and
-opens the PR on the short-lived branch that `build` or `branch-keeper` cut. It
+opens the PR on the short-lived branch that `build` or `branchwright` cut. It
 commits only when the tree arrives uncommitted. A fallback branch is cut
-only when the work was never branched: through `branch-keeper` when the tree is
+only when the work was never branched: through `branchwright` when the tree is
 clean, or by `ship` itself when the reviewed change is still in the tree and the
 subagent's dirty-trunk check would refuse it. After you merge, it verifies the PR
 state, deletes the merged branch after approval, and pulls the trunk.

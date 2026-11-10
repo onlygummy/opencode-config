@@ -269,15 +269,15 @@ but a separate `x-proxy-key` rotates on its own and lets a WAF rule match on it.
 
 | Agent | Use it for | Can edit |
 | --- | --- | --- |
-| branch-keeper | Creates the short-lived branch for another agent | Nothing; it writes git branch state only |
+| branchwright | Creates the short-lived branch for another agent | Nothing; it writes git branch state only |
 | scribe | ADRs, glossary entries, README, and pages under `docs/` | `README.md`, `GLOSSARY.md`, `GLOSSARY-MAP.md`, and `docs/` |
 
 ## Flow
 
 1. `plan` clarifies the request and records decisions through `scribe`. When the request is fuzzy it loads `grill-with-docs`, which runs the grilling interview and writes ADRs and glossary entries as decisions settle.
-2. `build` dispatches `branch-keeper`, or cuts the short-lived branch itself when the subagent is unavailable, then edits, runs lint, and sends any docs work to `scribe`.
+2. `build` dispatches `branchwright`, or cuts the short-lived branch itself when the subagent is unavailable, then edits, runs lint, and sends any docs work to `scribe`.
 3. `build` commits the change. `review` loads `requesting-code-review`, verifies the commits against the trunk in a fresh context, and cross-checks the conventional commit message.
-4. `ship` loads `git-workflow`, pushes without a prompt, and opens the PR on the short-lived branch. It dispatches `branch-keeper` for an unbranched clean tree and commits only when the tree arrives uncommitted.
+4. `ship` loads `git-workflow`, pushes without a prompt, and opens the PR on the short-lived branch. It dispatches `branchwright` for an unbranched clean tree and commits only when the tree arrives uncommitted.
 5. You merge on the web. `ship` verifies the merge, deletes the remote branch after approval, and pulls the trunk.
 
 ## Human gates
