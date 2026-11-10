@@ -86,7 +86,10 @@ foreach ($file in $files) {
     # Keep line breaks: only spaces and tabs sit between the dash and the
     # surrounding words, so the newline is never swallowed.
     $fixed = $text -replace '[ \t]*[\u2014\u2015][ \t]*', ', ' -replace '[\u2013]', '-'
-    Set-Content -LiteralPath $file.FullName -Value $fixed -NoNewline -Encoding UTF8
+    # Write UTF-8 without a BOM. Set-Content -Encoding UTF8 adds a BOM on
+    # Windows PowerShell 5.1, which would corrupt a Markdown frontmatter block.
+    $utf8NoBom = New-Object System.Text.UTF8Encoding($false)
+    [System.IO.File]::WriteAllText($file.FullName, $fixed, $utf8NoBom)
     Write-Output "  fixed"
   }
 }
